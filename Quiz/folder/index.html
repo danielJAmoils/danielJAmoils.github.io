@@ -1,1 +1,219 @@
-hi
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
+        <style>
+/* CSS */
+body { background-color: papayawhip; }
+header {
+    margin-bottom: 25px;
+    padding: 10px 0;
+    border-bottom: 5px double darkred;
+    text-align: center;
+    background-color: darksalmon;
+    box-shadow: 0 3px 15px black;
+}
+header h1 {
+    font-size: 3em;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: darkred;
+    text-shadow: 1px 1px 10px cornsilk,
+                 -1px 1px 10px cornsilk,
+                 1px -1px 10px cornsilk,
+                 -1px -1px 10px cornsilk;
+    margin-bottom: 10px;
+}
+article {
+    display: table;
+    margin: 0 auto;
+}
+article h1 {
+    font-size: 2em;
+    margin-bottom: 25px;
+}
+article h2 {
+    text-align: center;
+    font-size: .85em;
+    font-family: sans-serif;
+    font-weight: bold;
+    text-decoration: underline;
+    color: darkred;
+    margin-bottom: 20px;
+}
+article li {
+    font-size: 1.15em;
+    margin-bottom: 10px;
+    padding: 3px 2px;
+}
+article li::before {
+    content: "";
+    display: inline-block;
+    width: 30px;
+}
+article li.wrong::before {
+    content: "\2718";
+    font-family: sans-serif;
+    font-weight: bold;
+    color: darkred;
+    display: inline-block;
+    width: 30px;
+}
+article li.right::before {
+    content: "\2714";
+    color: green;
+    font-weight: bold;
+    display: inline-block;
+    width: 30px;
+}
+article li:not(.wrong):not(.right):hover {
+    background-color: peachpuff;
+    color: darkred;
+    cursor: pointer;
+}
+
+/* end CSS */
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Trivia!</h1>
+            <button data-json="jsTrivia.json">JavaScript Trivia</button>
+        </header>
+        <article></article>
+
+        <script>
+/* JAVASCRIPT */
+document.addEventListener("DOMContentLoaded", function(){
+
+/* APPLICATION-SCOPE VARIABLES */
+
+var trivia, currentQuestion, correctAnswers, wrongAnswers;
+
+/* EVENT LISTENERS */
+
+[].forEach.call(document.querySelectorAll("button"), function(button){
+    button.addEventListener("click", startButtonClick);
+});
+
+/* EVENT HANDLER FUNCTIONS */
+
+function startButtonClick(){
+    getJSON(this.getAttribute("data-json"), gotJSON);
+}
+
+function addAnswerClickListeners(){
+    [].forEach.call(document.querySelectorAll("li"), function(answer){
+        answer.addEventListener("click", handleQuestionClick);
+    });
+}
+
+function removeAnswerClickListeners(){
+    [].forEach.call(document.querySelectorAll("li"), function(answer){
+        answer.removeEventListener("click", handleQuestionClick);
+        //show wrong answers, prevent hover
+        if (answer.className === ""){
+            answer.className = "wrong";
+        }
+    });
+}
+
+function handleQuestionClick(){
+    var index = getElementIndex(this);
+    if (currentQuestion.opts[index].isCorrect){
+        //correct answer
+        correctAnswers++;
+        this.className = "right";
+        removeAnswerClickListeners();
+        setTimeout(nextQuestion, 1000);
+    } else {
+        //incorrect answer
+        wrongAnswers++;
+        this.className = "wrong";
+    }
+}
+
+/* LOGIC FUNCTIONS */
+
+function nextQuestion(){
+    //function variable
+    var question, html;
+    //end-game condition
+    if (!trivia.q.length){ //no more questions
+        endGame();
+        return;
+    }
+    //get next question from trivia object
+    currentQuestion = trivia.q.shift();
+    //write html for question
+    html = getQuestionHtml(currentQuestion);
+    //display html
+    document.querySelector("article").innerHTML = html;
+    //handle event listeners to answers
+    addAnswerClickListeners();
+}
+
+function getQuestionHtml(q){
+    var html = "";
+    html += "<h2>" + trivia.title + "</h2>";
+    html += "<h1>" + q.txt + "</h1>";
+    html += "<ol>";
+    q.opts.forEach(function(opt){
+        html += "<li>" + opt.txt + "</li>";
+    });
+    html += "</ol>";
+    return html;
+}
+
+function getEndGameHtml(){
+    var html = "";
+    html += "<h2>" + trivia.title + "</h2>";
+    html += "<h1>" + wrongAnswers + " incorrect answers</h1>";
+    html += "<h1>" + correctAnswers + " correct answers</h1>";
+    return html;
+}
+
+function endGame(){
+    var html = getEndGameHtml();
+    document.querySelector("article").innerHTML = html;
+}
+
+/* DATA FUNCTIONS */
+
+function getJSON(filepath, callback){
+    var xhr = new XMLHttpRequest();
+    xhr.addEventListener("load", function(e){
+        if (typeof callback === "function"){
+            callback(JSON.parse(e.target.response));
+        }
+    });
+    xhr.open("POST", filepath, true);
+    xhr.send();
+}
+
+function gotJSON(json){
+    //init
+    trivia = json;
+    correctAnswers = 0;
+    wrongAnswers = 0;
+    //start game
+    nextQuestion();
+}
+
+function getElementIndex(elem){
+    var index = 0;
+    while (elem){
+        elem = elem.previousSibling;
+        if ( elem && elem.nodeType === 1 ){ index++; }
+    }
+    return index;
+}
+
+});
+/* end JAVASCRIPT */
+        </script>
+    </body>
+</html>
