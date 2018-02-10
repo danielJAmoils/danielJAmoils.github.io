@@ -1,0 +1,26 @@
+{
+    "title":"JAVASCRIPT TRIVIA!",
+    "q":[
+        {
+            "txt": "how do you make a sandwich?",
+            "opts":[
+                {
+                    "txt":"eat it",
+                    "isCorrect": false
+                },
+                {
+                    "txt":"take a nap",
+                    "isCorrect": false
+                },
+                {
+                    "txt":"put somthing in the middle of bread",
+                    "isCorrect": true
+                },
+                {
+                    "txt":"put the bread in your face",
+                    "isCorrect": false
+                }
+            ]
+        }
+    ]
+}
