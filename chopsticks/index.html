@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chopsticks</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
+        <style>
+/************************** CSS **************************/
+
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5%;
+    background-color: lightgray;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+}
+
+#left.player-turn h2, #right.player-turn h2 {
+    position: absolute;
+    top: 5%;
+    width: 50%;
+    height: 5%;
+    text-align: center;
+    background-color: blue;
+    color: white;
+    font-size: 2em;
+}
+
+#left h2 {
+    left: 0;
+}
+
+#right h2{
+    right: 0;
+}
+
+.palm {
+    position: absolute;
+    width: 15%;
+    height: 30%;
+}
+
+.palm-top, .palm-bottom {
+    background-color: gray;
+    width: 100%;
+    height: 50%;
+    color: gray;
+}
+
+.palm-active .palm-top, .palm-active .palm-bottom {
+    background-color: #BCED91;
+    color: black;
+}
+
+.player-turn .palm-active .palm-top:hover,.player-turn .palm-active .palm-bottom:hover{
+    color: white;
+    background-color: red;
+    cursor: pointer;
+}
+
+#left .palm {
+    left: 0;
+    text-align: right;
+}
+#right .palm {
+    right: 0;
+}
+.top .palm {
+    top: 20%;
+}
+.bottom .palm {
+    top: 60%;
+}
+
+.fingers {
+    position: absolute;
+    width: 20%;
+    height: 30%;
+}
+
+#left .fingers {
+    left: 16%;
+}
+#right .fingers {
+    right: 16%;
+}
+.top .fingers {
+    top: 20%;
+}
+.bottom .fingers {
+    top: 60%;
+}
+
+.finger {
+    width: 100%;
+    height: 23%;
+    background-color: gray;
+    margin-top: 1%;
+    margin-bottom: 1%;
+    color: gray;
+    ninja: text;
+}
+
+.finger-active {
+    background-color: gold;
+    color: black;
+}
+
+.player-turn .finger-active:hover {
+    background-color: red;
+    color: white;
+    cursor: pointer;
+}
+
+#right .finger{
+    text-align: right;
+}
+
+/************************** end CSS **************************/
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Chopsticks</h1>
+        </header>
+        <main>
+            <section id="left" class="player-turn">
+                <h2>player one turn</h2>
+                <div class="top">
+                    <div class="palm palm-active">
+                        <div id="left-top-top" class="palm-top">tap top hand</div>
+                        <div id="left-top-bottom" class="palm-bottom">tap bottom hand</div>
+                    </div>
+                    <div class="fingers">
+                        <div id="left-top-bump-4" class="finger">bump four</div>
+                        <div id="left-top-bump-3" class="finger">bump three</div>
+                        <div id="left-top-bump-2" class="finger">bump two</div>
+                        <div id="left-top-bump-1" class="finger finger-active">bump one</div>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="palm palm-active">
+                        <div id="left-bottom-top" class="palm-top">tap top hand</div>
+                        <div id="left-bottom-bottom" class = "palm-bottom">tap bottom hand</div>
+                    </div>
+                    <div class="fingers">
+                        <div id="left-bottom-bump-1" class="finger finger-active">bump one</div>
+                        <div id="left-bottom-bump-2" class="finger">bump two</div>
+                        <div id="left-bottom-bump-3" class="finger">bump three</div>
+                        <div id="left-bottom-bump-4" class="finger">bump four</div>
+                    </div>
+                </div>
+            </section>
+            <section id="right">
+                <h2>player two turn</h2>
+                <div class="top">
+                    <div class="palm palm-active">
+                        <div id="right-top-top" class="palm-top">tap top hand</div>
+                        <div id="right-top-bottom" class = "palm-bottom">tap bottom hand</div>
+                    </div>
+                    <div class="fingers">
+                        <div id="right-top-bump-4" class="finger">bump four</div>
+                        <div id="right-top-bump-3" class="finger">bump three</div>
+                        <div id="right-top-bump-2" class="finger">bump two</div>
+                        <div id="right-top-bump-1" class="finger finger-active">bump one</div>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="palm palm-active">
+                        <div id="right-bottom-top" class="palm-top">tap top hand</div>
+                        <div id="right-bottom-bottom" class = "palm-bottom">tap bottom hand</div>
+                   </div>
+                    <div class="fingers">
+                        <div id="right-bottom-bump-1" class="finger finger-active">bump one</div>
+                        <div id="right-bottom-bump-2" class="finger">bump two</div>
+                        <div id="right-bottom-bump-3" class="finger">bump three</div>
+                        <div id="right-bottom-bump-4" class="finger">bump four</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <script>
+/************************** JAVASCRIPT **************************/
+
+function displayPlayer1(topFingers,bottomFingers){
+    //check if hand is out
+    if (topFingers>=5){
+        topFingers = 0;
+    }
+    if (bottomFingers>=5){
+        bottomFingers = 0;
+    }
+    //check if player loses
+    if (topFingers <=0 && bottomFingers<=0){
+        gameover("player 2");
+    }
+    //palm
+    var palms = document.querySelectorAll("#left .palm");
+    palms[0].className = "palm palm-active";
+    palms[1].className = "palm palm-active";
+    //fingers
+    var fingers = document.querySelectorAll("#left .finger");
+
+    for (var i=3; i>=0; i--){
+        if (topFingers > 3-i){
+            fingers[i].className = "finger finger-active";
+        }else{
+            fingers[i].className = "finger";
+        }
+    }
+
+    for (var i=4; i<=7; i++){
+        if (bottomFingers >= i-3){
+            fingers[i].className = "finger finger-active";
+        }else{
+            fingers[i].className = "finger";
+        }
+    }
+}
+
+function displayPlayer2(topFingers,bottomFingers){
+    //check if hand is out
+    if (topFingers>=5){
+        topFingers = 0;
+    }
+    if (bottomFingers>=5){
+        bottomFingers = 0;
+    }
+    //check if player loses
+    if (topFingers <=0 && bottomFingers<=0){
+        gameover("player 1");
+    }
+    //palm
+    var palms = document.querySelectorAll("#right .palm");
+    palms[0].className = "palm palm-active";
+    palms[1].className = "palm palm-active";
+    //fingers
+    var fingers = document.querySelectorAll("#right .finger");
+
+    for (var i=3; i>=0; i--){
+        if (topFingers > 3-i){
+            fingers[i].className = "finger finger-active";
+        }else{
+            fingers[i].className = "finger";
+        }
+    }
+
+    for (var i=4; i<=7; i++){
+        if (bottomFingers >= i-3){
+            fingers[i].className = "finger finger-active";
+        }else{
+            fingers[i].className = "finger";
+        }
+    }
+}
+
+function getFingers(leftOrRight,topOrBottom) {
+    var query = "",
+        activeFingers;
+    if (leftOrRight=="left"){
+        query += "#left ";
+    } else {
+        query+= "#right ";
+    }
+    if (topOrBottom=="top"){
+        query += ".top ";
+    } else {
+        query += ".bottom ";
+    }
+    query += ".finger-active";
+    activeFingers = document.querySelectorAll(query);
+    return activeFingers.length;
+}
+
+function switchPlayerTurn(){
+    var left = document.querySelector("#left"),
+        right = document.querySelector("#right");
+    if (left.className == "player-turn"){
+        //switch to player twos turn
+        left.className = "";
+        right.className = "player-turn";
+    } else {
+        //switch to player ones turn
+        left.className = "player-turn";
+        right.className = "";
+    }
+}
+
+function assignEventHandlers(){
+    var oldPalms = document.querySelectorAll(".palm div"),
+        oldFingers = document.querySelectorAll(".finger"),
+        palms = document.querySelectorAll(".player-turn .palm-active div"),
+        fingers = document.querySelectorAll(".player-turn .finger-active");
+    //remove old event handlers
+    [].forEach.call(oldPalms, function(palm){
+        palm.removeEventListener('click',handleTap);
+    });
+    [].forEach.call(oldFingers, function(finger){
+        finger.removeEventListener('click',handleBump);
+    });
+    //add new event handlers
+    [].forEach.call(palms,function(palm){
+        palm.addEventListener('click',handleTap);
+    });
+    [].forEach.call(fingers,function(finger){
+        finger.addEventListener('click',handleBump,false);
+    });
+}
+
+function handleTap(e){
+    var id = e.target.id.split("-"),
+        player = id[0],
+        opponent = (player === "left" ? "right" : "left"),
+        hand = id[1],
+        targetHand = id[2],
+        fingers = getFingers(player, hand),
+        opponentTopFingers = getFingers(opponent, "top"),
+        opponentBottomFingers = getFingers(opponent, "bottom");
+    if (player === "left"){
+        if (targetHand === "top"){
+            displayPlayer2(parseInt(opponentTopFingers,10)+parseInt(fingers,10),opponentBottomFingers);
+        }else{
+            displayPlayer2(opponentTopFingers,parseInt(opponentBottomFingers,10)+parseInt(fingers,10));
+        }
+    }else{
+        if (targetHand === "top"){
+            displayPlayer1(parseInt(opponentTopFingers,10)+parseInt(fingers,10),opponentBottomFingers);
+        }else{
+            displayPlayer1(opponentTopFingers,parseInt(opponentBottomFingers,10)+parseInt(fingers,10));
+        }
+    }
+    switchPlayerTurn();
+    assignEventHandlers();
+}
+
+function handleBump(e){
+    var id = e.target.id.split("-"),
+        player = id[0],
+        hand = id[1],
+        fingers = id[3],
+        topFingers = getFingers(player,"top"),
+        bottomFingers = getFingers(player,"bottom");
+    if(player === "left"){
+        if(hand === "top"){
+            displayPlayer1(topFingers-fingers,parseInt(bottomFingers,10)+parseInt(fingers,10));
+        }else{
+            displayPlayer1(parseInt(topFingers,10)+parseInt(fingers,10),bottomFingers-fingers);
+        }
+    }else{
+        if(hand === "top"){
+            displayPlayer2(topFingers-fingers,parseInt(bottomFingers,10)+parseInt(fingers,10));
+        }else{
+            displayPlayer2(parseInt(topFingers,10)+parseInt(fingers,10),bottomFingers-fingers);
+        }
+    }
+    switchPlayerTurn();
+    assignEventHandlers();
+}
+function gameover(winner){
+    alert(winner + " wins!");
+    location.reload();
+}
+//run time
+document.addEventListener("DOMContentLoaded", function() {
+    assignEventHandlers();
+});
+/************************** end JAVASCRIPT **************************/
+        </script>
+    </body>
+</html>
