@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" /> -->
+        <style media="screen">
+
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.6/p5.min.js"></script>
+    </head>
+    <body>
+
+        <script type="text/javascript">
+            // document.addEventListener("DOMContentLoaded", function(){
+
+
+function setup(){
+
+  createCanvas(windowWidth,windowHeight);
+  background(200);
+  noStroke();
+  columbia(...pos(1,3));
+  indonesia(...pos(2,4));
+  madagascar(...pos(3,1));
+  czech(...pos(1,4));
+  niger(...pos(3,2));
+  southAfrica(...pos(3,3));
+  armenia(...pos(1,1));
+  botswana(...pos(1,2));
+  georgia(...pos(2,1));
+  iceland(...pos(2,3));
+  greece(...pos(2,2));
+  switzerland(...pos(3,4));
+  maldives(...pos(4,4));
+  mauritius(...pos(4,1));
+  bangladesh(...pos(4,2));
+  sweden(...pos(4,3));
+  seychelles(...pos(5,1));
+ // kuwait(...pos(5,2));
+}
+
+function pos (col,row){
+    var maxW = 150,
+        maxH = 100,
+        margin = 20,
+        x = (maxW + margin)*--row+margin,
+        y = (maxH + margin)*--col+margin;
+    return[x,y,maxW,maxH];
+}
+var columbia = flag(3,2,columbiaDraw);
+function columbiaDraw(x,y, unit){
+    var gold = color(252,209,22),
+        blue = color(0,56,147),
+        red = color(206,17,38);
+    chief(x,y,unit*3,unit*2,unit,gold);
+    base(x,y,unit*3,unit*2,unit,blue,red);
+//   fill(252,209,22);//yellow
+//   rect(x,y,unit*3,unit*1);
+//   fill(0,56,147);//blue
+//   rect(x,y+unit,unit*3,unit*0.5);
+//   fill(206,17,38);//red
+//   rect(x,y+unit*1.5,unit*3,unit*0.5);
+}
+
+var indonesia = flag(3,2,indonesiaDraw);
+function indonesiaDraw(x,y, unit){
+    var red = color(239,51,64),
+        white = color(255);
+    bars(x,y,unit*3,unit*2,red, white);
+  // fill(239,51,64);//red
+  // rect(x,y,unit*3,unit);
+  // fill(255);//white
+  // rect(x,y+unit,unit*3,unit);
+
+  // bars(x, y, unit*3, unit*2, [
+  //     color(239, 51, 64), //red
+  //     color(255) //white
+  // ]);
+}
+
+var madagascar = flag(3,2,madagascarDraw);
+function madagascarDraw(x,y, unit){
+    var white = color(255),
+        red = color(213,0,50),
+        green = color(0,132,61);
+
+        hoistBand(x,y,unit*3,unit*2,unit,white);
+        bars(x+unit,y,unit*2,unit*2,red,green);
+
+  // fill(255);//white
+  // rect(x,y,unit,unit*2);
+  // fill(213,0,50);//red
+  // rect(x+unit,y,unit*2,unit*1);
+  // fill(0,132,61);//green
+  // rect(x+unit,y+unit,unit*2,unit);
+
+}
+
+var czech = flag(3,2,czechDraw);
+function czechDraw(x,y, unit){
+    var white = color(255),
+        red = color(213,0,50),
+        blue = color(1,33,105);
+    bars(x,y,unit*3,unit*2,white,red);
+  // fill(255);//white
+  // rect(x,y,unit*3,unit);
+  // fill(213,0,50);//red
+  // rect(x,y+unit,unit*3,unit);
+  fill(blue);//blue
+  triangle(x,y,x,y+unit*2,x+unit*1.5,y+unit);
+}
+var niger = flag(7,6,nigerDraw);
+function nigerDraw(x,y, unit){
+    var orange = color(255,103,31),
+        white = color(255),
+        green = color(0,132,61);
+    bars(x,y,unit*7,unit*6,orange,white,green);
+
+  // fill(255);//white
+  // rect(x,y+unit*2,unit*7,unit*2);
+  fill(orange);//orange
+  ellipse(x+unit*3.5,y+unit*3,unit*2*0.85);
+  // rect(x,y,unit*7,unit*2);
+  // fill(0,132,61);//green
+  // rect(x,y+unit*4,unit*7,unit*2);
+
+
+}
+var southAfrica = flag(450,300,southAfricaDraw);
+function southAfricaDraw(x,y, unit){
+  fill(200, 16, 46);//red
+  rect(x,y,unit*450,unit*100);
+  fill(0, 51, 160);//blue
+  rect(x,y+unit*200,unit*450,unit*100);
+  fill(255);//white
+  beginShape();
+  vertex(x,y);
+  vertex(x,y+unit*300);
+  vertex(x+unit*90,y+unit*300);
+  vertex(x+unit*240,y+unit*200);
+  vertex(x+unit*450,y+unit*200);
+  vertex(x+unit*450,y+unit*100);
+  vertex(x+unit*240,y+unit*100);
+  vertex(x+unit*90,y);
+  endShape(CLOSE);
+  fill(0, 122, 51);//green
+  beginShape();
+  vertex(x,y);
+  vertex(x,y+unit*300);
+  vertex(x+unit*54,y+unit*300);
+  vertex(x+unit*234,y+unit*180);
+  vertex(x+unit*450,y+unit*180);
+  vertex(x+unit*450,y+unit*120);
+  vertex(x+unit*234,y+unit*120);
+  vertex(x+unit*54,y);
+  endShape(CLOSE);
+
+  fill(255, 163, 0);//gold
+  triangle(x,y+unit*36,x,y+unit*264,x+unit*171,y+unit*150);
+  fill(0);//black
+  triangle(x,y+unit*60,x,y+unit*240,x+unit*135,y+unit*150);
+}
+
+var armenia = flag(2,1,armeniaDraw);
+function armeniaDraw(x,y, unit){
+    var red = color(217,0,18),
+        blue = color(0,51,160),
+        gold = color(242,168,0);
+
+    bars(x,y,unit*2,unit,red,blue,gold);
+  // fill(217,0,18);//red
+  // rect(x,y,unit*2,unit/3);
+  // fill(0,51,160);
+  // rect(x,y+unit/3,unit*2,unit/3);
+  // fill(242,168,0);
+  // rect(x,y+unit/3+unit/3,unit*2,unit/3);
+
+
+}
+
+var botswana = flag(36,24,botswanaDraw);
+function botswanaDraw(x,y,unit){
+    var blue = color(117, 170, 219),
+        black = color(0),
+        white = color(255);
+    field(x,y,unit*36,unit*24,blue);
+    fess(x,y,unit*36,unit*24,unit*6,white);
+    fess(x,y,unit*36,unit*24,unit*4,black);
+}
+
+ var georgia = flag(300,200,georgiaDraw);
+ function georgiaDraw(x,y,unit){
+     var white = color(255),
+        red = color(228, 0, 43);
+    field(x,y,unit*300,unit*200,white);
+     cross(x,y,unit*300,unit*200,unit*40,red);
+     greekCross(x+unit*45,y+unit*20,unit*40,unit*10,red);
+     greekCross(x+unit*45,y+unit*140,unit*40,unit*10,red);
+     greekCross(x+unit*215,y+unit*140,unit*40,unit*10,red);
+     greekCross(x+unit*215,y+unit*20,unit*40,unit*10,red);
+    //x,y,flagW,flagH,paleWidth,fessHeight,colorArray
+ }
+
+ var iceland = flag(25,18,icelandDraw);
+ function icelandDraw(x,y,unit){
+     var white = color(255),
+        blue = color(0, 48, 135),
+        red = color(210,38,48);
+    field(x,y,unit*25,unit*18,blue);
+    nordicCross(x,y,unit*25,unit*18,unit*7,unit*4,white);
+    nordicCross(x,y,unit*25,unit*18,unit*8,unit*2,red);
+    //x,y,flagW,flagH,offsetX,crossWidth,crossColor
+ }
+
+var greece  = flag(27,18,greeceDraw);
+function greeceDraw(x,y,unit){
+    var white = color(255),
+        blue = color(0, 51, 160);
+
+    //x,y,boxSize,crossWidth,colorArray
+    bars(x,y,unit*27,unit*18,blue,white,blue,white,blue,white,blue,white,blue);
+    field(x,y,unit*10,unit*10,blue);
+    greekCross(x,y,unit*10,unit*2,white);
+}
+
+var switzerland = flag(32,32,switzerlandDraw);
+function switzerlandDraw(x,y,unit){
+    var white = color(255),
+        red = color(200,16,46);
+        field(x,y,unit*32,unit*32,red);
+        //x,y,boxSize,crossWidth,colorArray
+        greekCross(x+unit*6,y+unit*6,unit*20,unit*6,white);
+}
+ var maldives = flag(72,48,maldivesDraw);
+ function maldivesDraw(x,y,unit){
+     var red = color(191, 13, 62),
+         green = color(0, 115, 103),
+         white = color(255);
+    field(x,y,unit*72,unit*48,red);
+    field(x+unit*12,y+unit*12,unit*48,unit*24,green);
+    fill(white);
+    ellipse(x+unit*39,y+unit*24,unit*16);
+    fill(green);
+    ellipse(x+unit*42,y+unit*24,unit*16);
+ }
+
+ var mauritius = flag(6,4,mauritiusDraw);
+ function mauritiusDraw(x,y,unit){
+     var red = color(238, 39, 55),
+         blue = color(21, 31, 109),
+         yellow = color(255, 215, 0),
+         green = color(0, 159, 77);
+     bars(x,y,unit*6,unit*4,red,blue,yellow,green);
+ }
+
+ var bangladesh = flag(20,12,bangladeshDraw);
+ function bangladeshDraw(x,y,unit){
+     var green = color(0, 102, 79),
+        red = color(228, 0, 70)
+     field(x,y,unit*20,unit*12,green);
+     fill(red);
+     ellipse(x+unit*9,y+unit*6,unit*8);
+ }
+
+ var sweden = flag(16,10,swedenDraw);
+ function swedenDraw(x,y,unit){
+     var blue = color(0, 75, 135),
+         yellow = color(255, 205, 0);
+     field(x,y,unit*16,unit*10,blue);
+     nordicCross(x,y,unit*16,unit*10,unit*5,unit*2,yellow);
+ }
+
+ var seychelles = flag(6,3,seychellesDraw);
+ function seychellesDraw(x,y,unit){
+     var blue = color(0, 47, 108),
+         yellow = color(254, 209, 65),
+         red = color(210, 38, 48),
+         white = color(255),
+         green = color(0, 122, 51);
+    fill(blue);
+    triangle(x,y,x+unit*2,y,x,y+unit*3);
+    fill(yellow);
+    triangle(x+unit*2,y,x+unit*4,y,x,y+unit*3);
+    fill(red);
+    quad(x+unit*4,y,x+unit*6,y,x+unit*6,y+unit*1,x,y+unit*3);
+    fill(white);
+    triangle(x,y+unit*3,x+unit*6,y+unit*1,x+unit*6,y+unit*2);
+    fill(green);
+    triangle(x,y+unit*3,x+unit*6,y+unit*2,x+unit*6,y+unit*3);
+ }
+var kuwait = flag(2,1,kuwaitDraw);
+function kuwaitDraw(x,y,unit){
+    var green = color(67, 176, 42),
+        red = color(200, 16, 46),
+        white = color(255),
+        black = color(0)
+    //bars(x,y,unit*2,green,white,red)
+}
+
+function flagCalc(ratioW,ratioH,maxW, maxH){
+  var unit =  Math.min(maxW/ratioW,maxH/ratioH),
+
+      offsetX = (maxW-unit*ratioW)/2,
+      offsetY = (maxH-unit*ratioH)/2;
+
+  return [unit,offsetX,offsetY];
+}
+
+function flag(ratioW,ratioH,drawFunc){
+    return function(x,y,maxW,maxH){
+        var[unit,offsetX,offsetY] = flagCalc(ratioW,ratioH,maxW,maxH);
+        x+=offsetX;
+        y+=offsetY;
+        drawFunc(x,y,unit);
+    }
+}
+
+function bars(x,y,flagW,flagH,...colorArray){
+    var eachBarHeight = flagH/colorArray.length;
+    for(var i=0;i<colorArray.length;i++){
+        fill(colorArray[i]);
+        rect(x,y+eachBarHeight*i,flagW,eachBarHeight);
+        //colorArray.shift();
+    }
+}
+
+function bands(x,y,flagW,flagH,...colorArray){
+    var eachBandwidth = flagW/colorArray.length;
+    for(var i=0;i<colorArray.length;i++){
+        fill(colorArray[i]);
+        rect(x+eachBandwidth*i,y,eachBandwidth,flagH);
+        // colorArray.shift();
+
+    }
+}
+
+function chief(x,y,flagW,flagH,chiefHeight,...chiefColors){
+    bars(x,y,flagW,chiefHeight,...chiefColors);
+}
+
+function base(x,y,flagW,flagH,baseHeight,...baseColors){
+    bars(x,y+flagH - baseHeight,flagW,baseHeight,...baseColors);
+}
+function hoistBand(x,y,flagW,flagH,hoistBandWidth,hoistBandColor){
+    bands(x,y,hoistBandWidth,flagH,hoistBandColor);
+}
+
+function flyBand(x,y,flagW,flagH,flyBandWidth,...flyBandColors){
+    bands(x+flagW - flyBandWidth,y,flyBandWidth,flagHeight,...flyBandColors);
+}
+
+function fess(x,y,flagW,flagH,fessHeight,...fessColors){
+    bars(x,y+flagH/2 - fessHeight/2,flagW,fessHeight,...fessColors);
+}
+
+function pale(x,y,flagW,flagH,paleWidth,...paleColors){
+    bands(x + flagW/2 - paleWidth/2,y,paleWidth,flagH,...paleColors);
+}
+
+function field(x,y,flagW,flagH,fieldColor){
+    fill(fieldColor);
+    rect(x,y,flagW,flagH);
+}
+
+ function cross(x,y,flagW,flagH,crossWidth,crossColor){
+    pale(x,y,flagW,flagH,crossWidth,crossColor);
+    fess(x,y,flagW,flagH,crossWidth,crossColor);
+}
+
+function greekCross(x,y,boxSize,crossWidth,crossColor){
+    cross(x,y,boxSize,boxSize,crossWidth,crossColor);
+}
+
+function nordicCross(x,y,flagW,flagH,offsetX,crossWidth,crossColor){
+    fess(x,y,flagW,flagH,crossWidth,crossColor);
+    pale(x,y,offsetX*2 + crossWidth,flagH,crossWidth,crossColor);
+}
+            // });
+        </script>
+
+    </body>
+</html>
