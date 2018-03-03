@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>cipher decipher</title>
+<style>
+    body{
+        text-align: center;
+    }
+    #input{
+        width: 800px;
+        height: 500px;
+    }
+</style>
+</head>
+<body>
+    <textarea id ="input" autofocus></textarea><br />
+    <button id="encipher">encipher</button>
+    <button id="decipher">decipher</button>
+    <script>
+//converts a string to char codes and seprates them by a space
+    document.getElementById("encipher").addEventListener("click", function(){
+            var input = document.getElementById("input").value,
+                output= "";
+            input.split('').forEach(function(char) {
+                output += char.charCodeAt(0) + " ";
+            });
+            document.getElementById("input").value=output;
+    });
+//decipher the char code back to a string
+    document.getElementById("decipher").addEventListener("click", function(){
+            var input = document.getElementById("input").value,
+                output= "";
+            input.split(' ').forEach(function(char) {
+                output += String.fromCharCode(char);
+            });
+            document.getElementById("input").value=output;
+    });
+    </script>
+</body>
+</html>
