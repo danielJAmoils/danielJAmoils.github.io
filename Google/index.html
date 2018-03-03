@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title></title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css" />
+        <style media="screen">
+
+        </style>
+    </head>
+    <body>
+        <input type="text"  value="">
+        <input type="button"  value="search google">
+        <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function(){
+
+                var searchWindow;
+
+                document.querySelector("input[type='button']").addEventListener("click",function(){
+                    var text = document.querySelector("input[type='text']").value;
+                    if(text.length===0){return;}
+                    searchWindow = window.open("https://www.google.com/search?q="+text, "daniel search");
+                });
+
+
