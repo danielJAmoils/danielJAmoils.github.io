@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.21/p5.min.js"></script>
+        <style>
+        </style>
+    </head>
+    <body>
+        <script>
+        "use strict";
+        function Die(x, y, dieWidth){
+            this.dieX = x;
+            this.dieY = y;
+            this.dieWidth = dieWidth;
+            this.dieCornerRounding = dieWidth*0.1;
+            this.dieColor = {
+                r: 239, g: 245, b: 237
+            };
+            this.pipColor = {
+                r: 78, g: 7, b: 92
+            };
+            this.pipDiameter = dieWidth*0.15;
+            this.pipX = {
+                left: x + dieWidth/4,
+                middle: x + dieWidth/2,
+                right: x + dieWidth*3/4
+            }
+            this.pipY = {
+                top: y + dieWidth/4,
+                middle: y + dieWidth/2,
+                bottom: y + dieWidth*3/4
+            }
+            this.pipFormaction = [
+                [
+                    this.pipX.middle, this.pipY.middle
+                ],
+                [
+                    this.pipX.left, this.pipY.top,
+                    this.pipX.right, this.pipY.bottom
+                ],
+                [
+                    this.pipX.left, this.pipY.bottom,
+                    this.pipX.middle, this.pipY.middle,
+                    this.pipX.right, this.pipY.top
+                ],
+                [
+                    this.pipX.left, this.pipY.top,
+                    this.pipX.left, this.pipY.bottom,
+                    this.pipX.right, this.pipY.top,
+                    this.pipX.right, this.pipY.bottom
+                ],
+                [
+                    this.pipX.left, this.pipY.top,
+                    this.pipX.left, this.pipY.bottom,
+                    this.pipX.middle, this.pipY.middle,
+                    this.pipX.right, this.pipY.top,
+                    this.pipX.right, this.pipY.bottom
+                ],
+                [
+                    this.pipX.left, this.pipY.top,
+                    this.pipX.left, this.pipY.middle,
+                    this.pipX.left, this.pipY.bottom,
+                    this.pipX.right, this.pipY.top,
+                    this.pipX.right, this.pipY.middle,
+                    this.pipX.right, this.pipY.bottom
+                ]
+            ];
+        };
+        Die.prototype = {
+            constructor: Die,
+            roll: function(){
+                var rnd = Math.floor(random(0, this.pipFormaction.length));
+                this.clear();
+                this.displayPips(rnd);
+            },
+            clear: function(){
+                fill(this.dieColor.r,
+                    this.dieColor.g,
+                    this.dieColor.b);
+                rect(this.dieX, this.dieY,
+                    this.dieWidth, this.dieWidth,
+                    this.dieCornerRounding);
+            },
+            displayPips: function(rnd){
+                var pips = this.pipFormaction[rnd].slice(0);
+                fill(this.pipColor.r,
+                    this.pipColor.g,
+                    this.pipColor.b);
+                while (pips.length){
+                    let pipX = pips.shift(),
+                        pipY = pips.shift();
+                ellipse(pipX, pipY,
+                        this.pipDiameter, this.pipDiameter);
+                }
+            }
+        }
+        const DIE_WIDTH = 100,
+              NUMBER_OF_DICE =2;
+        var dice = [];
+        function setup(){
+            var padding = DIE_WIDTH/(NUMBER_OF_DICE+1),
+                canvasWidth = DIE_WIDTH*(NUMBER_OF_DICE+1),
+                canvasHeight = DIE_WIDTH + 2*padding;
+            createCanvas(canvasWidth, canvasHeight);
+            background(11, 102, 32);
+            for (let i=0; i<NUMBER_OF_DICE; i++){
+                let x = (i*DIE_WIDTH)+(i+1)*padding,
+                    y = padding;
+                dice[i] = new Die(x, y, DIE_WIDTH);
+                dice[i].roll();
+            }
+        }
+        function mouseReleased(){
+            dice.forEach(die => die.roll());
+        }
+        </script>
+    </body>
+</html>
