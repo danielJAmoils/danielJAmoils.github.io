@@ -1,1 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        html, body {
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        body {
+            background-color: green;
+        }
+        h1 {
+            font-family: sans-serif;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-shadow: 1px 1px 10px gold,
+                         -1px 1px 10px gold,
+                         1px -1px 10px gold,
+                         -1px -1px 10px gold;
+        }
+        div#player,
+        div#house {
+            position: absolute;
+            width: 50%;
+        }
+        div#player {
+            left: 0;
+        }
+        div#house {
+            right: 0;
+        }
+        h2 {
+            border-radius: 20px 20px 0 0;
+        }
+        div#player h2 {
+            background-color: pink;
+        }
+        div#house h2 {
+            background-color: cyan;
+        }
+        div#winner {
+            position: absolute;
+            margin: 0 auto;
+            bottom: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: sans-serif;
+            font-size: 50px;
+            background-color: rgba(255,215,0,0.75);
+            border-radius: 10px;
+        }
+        span.card {
+            display: inline-block;
+            margin: 0 2px 10px 2px;
+            padding: 10px 0 0 4px;
+            width: 75px;
+            height: 100px;
+            font-size: 30px;
+            text-align: left;
+            background-color: white;
+            border-radius: 25px;
+            box-shadow: 1px 1px 5px 0 black;
+        }
+        span.red-card {
+            color: red;
+        }
+        span.black-card {
+            color: black;
+        }
+        span.card-back {
+            background-color: brown;
+        }
+        div.total {
+            margin: 15px 0 25px 0;
+            font-weight: bold;
+        }
+        button {
+            width: 100px;
+            padding: 2px 0;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: gold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blackjack</h1>
+    <div id="player">
+        <h2>Player</h2>
+        <div id="playerCards" class="cards"></div>
+        <div id="playerTotal" class="total"></div>
+        <div id="controls">
+            <button id="hit">Hit</button>
+            <button id="stay">Stay</button>
+            <button id="new">New Game</button>
+        </div>
+    </div>
+    <div id="house">
+        <h2>House</h2>
+        <div id="houseCards" class="cards"></div>
+        <div id="houseTotal" class="total"></div>
+    </div>
+    <div id="winner"></div>
 
+    <script>
+// ========================================== JAVASCRIPT ==========================================
+/*
+ * ----------GLOBALS----------
+ */
+var player,
+    house,
+    deck,
+    playerTurn,
+    playerCardDisplay,
+    houseCardDisplay,
+    playerTotalDisplay,
+    houseTotalDisplay,
+    winnerDisplay,
+    cardHtmlRedStart = "<span class=\"card red-card\">",
+    cardHtmlBlackStart = "<span class=\"card black-card\">",
+    cardHtmlEnd = "</span>",
+    cardHtmlCardBack = "<span class=\"card card-back\">&nbsp;</span>";
+/*
+ * ----------DECK----------
+ */
+function getNewDeck(){
+    /*
+     *  Builds a fresh deck of cards for a new game.
+     *  Deck is an array of card objects.
+     *  Card object has three properties:
+     *      "face" is the face value, like Kâ¤ or 8â™£
+     *      "color" is either red or black
+     *      "value" is the number value, e.g. J,Q,K = 10 and
+     *          A is assumed to be 11
+     *
+     *  NOTE: this assumes a single-deck game;
+     *  for more than one deck, only this function
+     *  needs to be changed
+     */
+    var deck = [],
+        i, face, suit, value, card,
+        colors = ["red", "black"],
+        suits = ["&hearts;", "&diams;", "&spades;", "&clubs;"];
+    //loop and create each card
+    for (i=0; i<52; i++){
+        //2-10 assignments
+        face = value = i%13;
+        suit = suits[Math.floor(i/13)];
+        color = colors[Math.floor(i/26)];
+        //Jack, Queen, King assignments
+        if ([0,11,12].indexOf(face) !== -1){
+            if (face === 0){ face = "J"; }
+            if (face === 11){ face = "Q"; }
+            if (face === 12){ face = "K"; }
+            value = 10;
+        }
+        //Ace assignment (and assume 11 for Ace value)
+        if (face === 1){
+            face = "A";
+            value = 11;
+        }
+        //add card to deck
+        card = {
+            "face": face + suit,
+            "color": color,
+            "value": value
+        }
+        deck.push(card);
+    }
+    //return full deck, an array of 52 card objects
+    return deck;
+}
+function dealCard(){
+    /*
+     *  Removes one card object from the global deck array.
+     *  The deck length is reduced by one and
+     *  the card object is returned
+     */
+    var availableCards = deck.length,
+        randomIndex = Math.floor(Math.random()*availableCards),
+        card = deck.splice(randomIndex, 1);
+    //splice returns an array; we want only the object in that array
+    //so get only the first element of card
+    return card[0];
+}
+function dealPlayerCard(howMany){
+    /*
+     *  Invokes dealCard(), getting a card object,
+     *  and pushes it to the global player array.
+     *  Then updatePlayerCards() is invoked.
+     */
+    var i,
+        howMany = howMany || 1;
+    for (i=0; i<howMany; i++){
+        player.push( dealCard() );
+    }
+    updatePlayerCards();
+}
+function dealHouseCard(howMany){
+    /*
+     *  Invokes dealCard(), getting a card object,
+     *  and pushes it to the global house array.
+     *  Then updateHouseCards() is invoked.
+     */
+    var i,
+        howMany = howMany || 1;
+    for (i=0; i<howMany; i++){
+        house.push( dealCard() );
+    }
+    updateHouseCards();
+}
+/*
+ * ----------PLAYER----------
+ */
+ function playerHits(){
+     /*
+      * This is fired when player clicks on the "Hit" button.
+      * It checks if global playerTurn is true so that
+      * player can't keep clicking "hit" even after the game
+      * is over.
+      */
+     if (playerTurn){
+         dealPlayerCard();
+     }
+ }
+ function playerStays(){
+     /*
+      * This is fired when player clicks on the "Stay" button.
+      * It checks if the global playerTurn is true so that
+      * player can't keep clicking "stay" even after the game
+      * is over.
+      */
+     if (playerTurn){
+         playerTurn = false;
+         housePlays();
+     }
+ }
+ function updatePlayerCards(){
+     /*
+      * This updates the player's hand by calculating the
+      * total and rebuilding the view. Also, if the player
+      * has gone over 21, then it's the house's turn.
+      */
+     var playerTotal = updatePlayerTotal();
+     displayPlayerCards();
+     displayPlayerTotal(playerTotal);
+     if ( playerTotal > 21 ){
+         //player hit too many times
+         //and went over 21;
+         //let house play
+         playerStays();
+     }
+ }
+ function updatePlayerTotal(){
+     /*
+      * This sums the value of each card object in
+      * player's hand, changing an Ace from eleven to
+      * one if the player is over 21.
+      * This function uses recursion by changing one
+      * Ace then calling itself; this way more than
+      * one Ace can be handled.
+      */
+     var total = 0,
+         hasElevenPointAce = false,
+         aceIndex;
+     //tally up all card values
+     player.forEach(function(card, index){
+         total += card.value;
+         if ( card.value === 11 ){
+             hasElevenPointAce = true;
+             aceIndex = index;
+         }
+     });
+     //if over 21 and has an 11-point Ace,
+     //change to 1-point Ace and try again
+     if ( total > 21 && hasElevenPointAce ){
+         player[aceIndex].value = 1;
+         return updatePlayerTotal();
+     }
+     //not over 21 and/or no 11-point Aces
+     return total;
+ }
+ function displayPlayerCards(){
+     /*
+      * Update the player card's view
+      */
+     var html = "";
+     //generate html from player cards
+     player.forEach(function(card){
+         if ( card.color === "red" ){
+             html += cardHtmlRedStart;
+         } else {
+             html += cardHtmlBlackStart;
+         }
+         html += card.face + cardHtmlEnd;
+     });
+     //put cards into DOM
+     playerCardDisplay.innerHTML = html;
+ }
+ function displayPlayerTotal(total){
+     /*
+      * Update the player total's view
+      */
+     var over = "";
+     if (total > 21){ over = " (OVER)"; }
+     playerTotalDisplay.innerHTML = "Total: " + total + over;
+ }
+ /*
+  * ----------HOUSE----------
+  */
+function housePlays(){
+    /*
+     *  This is the house AI logic (simple as it is).
+     *  It also checks for end-of-game winner
+     *  conditions.
+     */
+    var houseTotal = updateHouseTotal();
+    if ( houseTotal < 17 ){
+        dealHouseCard();
+    } else {
+        playerTotal = updatePlayerTotal();
+        if (playerTotal > 21){
+            playerLoses();
+            return;
+        }
+        if (houseTotal === playerTotal){
+            playerTies();
+            return;
+        }
+        if (houseTotal > playerTotal){
+            playerLoses();
+            return;
+        }
+        if (houseTotal < playerTotal){
+            playerWins();
+            return;
+        }
+    }
+}
+ function updateHouseCards(){
+     /*
+      * This updates the house's hand by calculating the
+      * total and rebuilding the view. Also, if the house
+      * has gone over 21, then it's the house's turn.
+      * This also loops back to the house AI if it's not
+      * the player's turn.
+      */
+     var houseTotal = updateHouseTotal();
+     displayHouseCards();
+     displayHouseTotal(houseTotal);
+     if ( houseTotal > 21 ){
+         playerWins();
+     } else {
+         if (!playerTurn){
+             //direct gameplay to the house AI
+             housePlays();
+         }
+     }
+ }
+ function updateHouseTotal(){
+     /*
+      * This sums the value of each card object in
+      * house's hand, changing an Ace from eleven to
+      * one if the house is over 21.
+      * This function uses recursion by changing one
+      * Ace then calling itself; this way more than
+      * one Ace can be handled.
+      *
+      * NOTE: updatePlayerTotal() and updateHouseTotal()
+      * are nearly identical. In another iteration of
+      * this game, the reusable code should be extracted
+      * into its own, separate function.
+      */
+     var total = 0,
+         hasElevenPointAce = false,
+         aceIndex;
+     //tally up all card values
+     house.forEach(function(card, index){
+         total += card.value;
+         if ( card.value === 11 ){
+             hasElevenPointAce = true;
+             aceIndex = index;
+         }
+     });
+     //if over 21 and has an 11-point Ace,
+     //change to 1-point Ace and try again
+     if ( total > 21 && hasElevenPointAce ){
+         house[aceIndex].value = 1;
+         return updatePlayerTotal();
+     }
+     //not over 21 and/or no 11-point Aces
+     return total;
+ }
+ function displayHouseCards(){
+     /*
+      * Update the house card's view, including adding
+      * a face-down card at the beginning of the game
+      */
+     var html = "";
+     //generate html from house cards
+     house.forEach(function(card){
+         if ( card.color === "red" ){
+             html += cardHtmlRedStart;
+         } else {
+             html += cardHtmlBlackStart;
+         }
+         html += card.face + cardHtmlEnd;
+     });
+     //add face-down card if there's only one card in house's hand
+     //(while player's turn)
+     if (house.length === 1){
+         html += cardHtmlCardBack;
+     }
+     //put cards into DOM
+     houseCardDisplay.innerHTML = html;
+ }
+ function displayHouseTotal(total){
+     /*
+      * Update the house total's view
+      */
+     var over = "";
+     if (total > 21){ over = " (OVER)"; }
+     houseTotalDisplay.innerHTML = "Total: " + total + over;
+ }
+/*
+ * ----------GAME----------
+ */
+function gameInit(){
+    /*
+     *  This is called once, when the DOM has loaded.
+     *  It builds the querySelectors as global variables
+     *  and assigns the event listeners.
+     */
+    //get DOM elements for global variables
+    playerCardDisplay = document.querySelector("#playerCards");
+    houseCardDisplay = document.querySelector("#houseCards");
+    playerTotalDisplay = document.querySelector("#playerTotal");
+    houseTotalDisplay = document.querySelector("#houseTotal");
+    winnerDisplay = document.querySelector("#winner");
+    //set up event-driven environment
+    document.querySelector("#hit").addEventListener("click", playerHits);
+    document.querySelector("#stay").addEventListener("click", playerStays);
+    document.querySelector("#new").addEventListener("click", newGame);
+}
+function newGame(){
+    /*
+     *  This is called every time a new game begins, including
+     *  when the page loads.
+     *  It resets the game, its global variables, and its views
+     */
+    //reset global variables
+    deck = getNewDeck();
+    player = [];
+    house = [];
+    playerTurn = true;
+    //remove anything in the winner display
+    winnerDisplay.innerHTML = "";
+    //initial deal
+    dealPlayerCard(2); //player gets two cards to start with
+    dealHouseCard(); //house gets one card to start with (the other is face down)
+}
+function playerLoses(){
+    /*
+     *  Update the view at the end of the game.
+     */
+    winnerDisplay.innerHTML = "&diams; House Wins &diams;";
+}
+function playerWins(){
+    /*
+     *  Update the view at the end of the game.
+     */
+    winnerDisplay.innerHTML = "&hearts; You Win!!! &hearts;";
+}
+function playerTies(){
+    /*
+     *  Update the view at the end of the game.
+     */
+    winnerDisplay.innerHTML = "&spades; Tie, House Wins &spades;";
+}
+/*
+ * ----------RUNTIME----------
+ */
+document.addEventListener("DOMContentLoaded", function(){
+    /*
+     *  Anonymous function that preps and launches the game
+     */
+    gameInit();
+    newGame();
+});
+// ========================================== end JAVASCRIPT ==========================================
+    </script>
+</body>
+</html>
