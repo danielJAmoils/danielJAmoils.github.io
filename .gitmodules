@@ -1,0 +1,3 @@
+[submodule "CHESS_JS"]
+	path = CHESS_JS
+	url = https://github.com/danielJAmoils/CHESS_JS.git
